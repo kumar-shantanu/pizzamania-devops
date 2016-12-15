@@ -1,0 +1,42 @@
+---
+#Title:tasks file for common activity
+#Author: Kumar Shantanu
+#Email: km.shantanu@gmail.com
+#company Name: Pizzamania Services Pvt Ltd.
+
+  - name: Install list of packages
+    yum: pkg={{item}} state=present
+    with_items:
+        - vim
+        - make
+        - gcc
+        - libselinux-python
+        - wget
+        - unzip
+
+  - name: stop iptbles and selinux
+    service: name=firewalld state=stopped enabled=false
+    ignore_errors: yes
+
+  - name: Setting SELinux to permissive
+    command: setenforce 0
+
+  - name: making persistent changes in selinux file to disable selinux
+    replace: dest=/etc/sysconfig/selinux
+             regexp='enforcing'
+             replace='disabled'
+             backup=yes
+
+  - name: be sure ntp is installed
+    yum: pkg=ntp state=installed
+    tags: ntp
+
+#  - name: be sure ntp is configured ##Enable it when we need to have custom time server.
+#    template: src=ntp.conf.j2 dest=/etc/ntp.conf
+#    notify:
+#      - restart ntpd
+#    tags: ntp
+
+  - name: be sure ntpd is running and enabled
+    service: name=ntpd state=running enabled=yes
+    tags: ntp

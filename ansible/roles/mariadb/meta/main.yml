@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  author: Kumar Shantanu
+  description: Installs MariaDB
+  company: Pizzamania Services Pvt Ltd.
+  license: license (MIT, BSD)
+  min_ansible_version: 1.8
+  platforms:
+    - name: EL
+      versions:
+        - 6
+        - 7
+    - name: Ubuntu
+      versions:
+        - trusty
+  categories:
+    - database:sql
+
+dependencies: []

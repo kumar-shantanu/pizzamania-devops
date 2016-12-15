@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  author: "Kumar Shantanu"
+  license: Apache
+  min_ansible_version: 2.0
+  platforms:
+   - name: EL
+     versions:
+      - 5
+      - 6
+   - name: Ubuntu
+     versions:
+      - precise
+      - quantal
+      - raring
+      - saucy
+      - trusty
+  categories:
+   - web
+allow_duplicates: yes
+dependencies: []

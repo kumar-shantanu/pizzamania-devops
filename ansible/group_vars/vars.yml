@@ -1,0 +1,10 @@
+---
+
+rds_admin: "changeme"
+rds_pass:  "changeme"
+alf_pass: "changeme"
+custom_ec2_dns: ec2-52-91-210-142.compute-1.amazonaws.com
+jasper_ec2_dns: ec2-52-91-70-71.compute-1.amazonaws.com
+nginx_ec2_dns: ec2-52-91-61-49.compute-1.amazonaws.com
+mariadb_ec2_dns: ec2-52-91-206-185.compute-1.amazonaws.com
+tomcat_ec2_dns: ec2-52-91-206-185.compute-1.amazonaws.com

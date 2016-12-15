@@ -1,0 +1,113 @@
+---
+#Title: Ansible code for Jasper Machine
+#Author: Kumar Shananu
+#Email: km.shantanu@gmail.com
+#company Name: Pizzamania Services Pvt Ltd.
+
+  - include_vars: ../../../group_vars/vars.yml
+  - include_vars: ../../../rds_vars.yml
+
+  - name: create apps dir
+    file: dest=/opt/apps state=directory mode=0755
+
+  - name: create apps dir
+    file: dest={{ java_dir }} state=directory mode=0755
+
+  - name: download java7
+    get_url: url={{ java_url }}
+             url_username={{ auth_user }}
+             url_password={{ auth_pass }}
+             dest={{ java_dir }}/jdk-7u79-linux-x64.tar.gz
+             mode=0755
+
+  - name: unarchiving java
+    unarchive: src={{ java_dir }}/jdk-7u79-linux-x64.tar.gz
+               dest={{ java_dir }}
+               copy=no
+
+  - name: rename jdk directory
+    command: mv {{ java_dir }}/jdk1.7.0_79 {{ java_dir }}/jdk7u79
+
+  - name: deleting java tar file
+    file: dest={{ java_dir }}/jdk-7u79-linux-x64.tar.gz state=absent
+
+  - name: updating java alternatives
+    command: alternatives --install /usr/bin/{{ item }} {{ item }} {{ java_dir }}/jdk7u79/bin/{{ item }} 1
+    with_items:
+        - java
+        - javac
+        - javaws
+
+  - name: donload apache-tomacat
+    get_url: url={{ tomcat_url }} 
+             url_username={{ auth_user }}
+             url_password={{ auth_pass }}
+             dest={{ tomcat_dir }}/apache-tomcat-8.0.24.tar.gz
+             mode=0755
+
+  - name: unarchive tomacat
+    unarchive: src={{ tomcat_dir }}/apache-tomcat-8.0.24.tar.gz 
+               dest={{ tomcat_dir }} 
+               copy=no
+
+  - name: deleting tomcat tar file
+    file: dest={{ tomcat_dir }}/apache-tomcat-8.0.24.tar.gz state=absent
+
+
+  - name: setting memory in the jvm memory and permgen size
+    lineinfile: dest={{ tomcat_dir }}/apache-tomcat-8.0.24/bin/catalina.sh
+                regexp='Java runtime options used when any command'
+                line='JAVA_OPTS="-Xms{{ min_mem }}m -Xmx{{ max_mem }}m -XX:PermSize=512m -XX:MaxPermSize=512m"'
+
+  - name: tomcat init script
+    template: src=tomcat.j2 dest=/etc/init.d/tomcat mode=0755
+
+  - name: Donloading jasper server community
+    get_url: url={{ jasper_url }} 
+             url_username={{ auth_user }}
+             url_password={{ auth_pass }}
+             dest={{ jasper_dir }}/jasperreports-server-cp-6.1.0-bin.tar.gz
+
+  - name: Unarchive jasper
+    unarchive: src={{ jasper_dir }}/jasperreports-server-cp-6.1.0-bin.tar.gz
+               dest={{ jasper_dir }} 
+               mode=0755 
+               copy=no
+
+  - name: deleting jasper tar file
+    file: dest={{ jasper_dir }}/jasperreports-server-cp-6.1.0-bin.tar.gz
+          state=absent
+
+  - name: configure the build file
+    template: src=default_master.properties.j2  
+              dest={{ buildomatic_dir }}/default_master.properties
+
+  - name: copy mysql connector jar to jasper
+    get_url: url={{ connector_url }}
+             url_username={{ auth_user }}
+             url_password={{ auth_pass }}
+             dest={{connector_dir }}/mysql-connector-java-5.1.36-bin.jar
+             mode=0755
+
+  - name: Change db server address
+    lineinfile: dest={{ buildomatic_dir }}/default_master.properties 
+                regexp='dbHost' 
+                line='dbHost='{{ rds_endpoint }}''
+
+  - name: Change db user
+    replace: dest={{ buildomatic_dir }}/default_master.properties 
+             regexp='jasperadmin' 
+             replace='{{rds_admin}}'
+             backup=yes
+
+  - name: Change db pass
+    replace: dest={{ buildomatic_dir }}/default_master.properties 
+             regexp='pleasechangeme' 
+             replace='{{rds_pass}}'
+             backup=yes
+
+  - name: run js-install-ce.sh
+    command: chdir="/opt/apps/jasperreports-server-cp-6.1.0-bin/buildomatic/" sh js-install-ce.sh minimal
+
+  - name: run tomcat from script
+    shell: chdir={{ tomcat_dir }}/apache-tomcat-8.0.24/bin/ nohup ./startup.sh >> /tmp/foo

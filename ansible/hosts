@@ -1,0 +1,12 @@
+[nginx]
+localhost
+[tomcat]
+localhost
+[jasper]
+localhost
+[mariadb]
+localhost
+[cluster_one]
+localhost
+localhost
+localhost galera_bootstrap=1

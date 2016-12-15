@@ -1,0 +1,16 @@
+---
+# vars file for jasper
+java_dir: "/usr/share/java"
+auth_user: "use only if needed"
+auth_pass: "use only if needed"
+jasper_dir: "/opt/apps"
+tomcat_dir: "/opt/apps"
+min_mem: "{{ (0.8* ansible_memtotal_mb)|int }}"
+max_mem: "{{ (0.8* ansible_memtotal_mb)|int }}"
+buildomatic_dir: "/opt/apps/jasperreports-server-cp-6.1.0-bin/buildomatic"
+connector_dir: "/opt/apps/jasperreports-server-cp-6.1.0-bin/buildomatic/conf_source/db/mysql/jdbc"
+
+tomcat_url: "http://www.example.com"
+jasper_url: "http://www.example.com"
+java_url: 'http://www.example.com'
+connector_url: "www.example.com"

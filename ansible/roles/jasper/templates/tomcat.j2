@@ -1,0 +1,60 @@
+#!/bin/sh
+# description: tomcat start/stop
+# chkconfig: 3 80 20 
+# -----------------------------------------------------------------------------
+# Start/Stop Script for the CATALINA Server
+#
+# Environment Variable Prequisites
+#
+#   CATALINA_HOME   May point at your Catalina "build" directory.
+#
+#   CATALINA_BASE   (Optional) Base directory for resolving dynamic portions
+#                   of a Catalina installation.  If not present, resolves to
+#                   the same directory that CATALINA_HOME points to.
+#
+#   CATALINA_OPTS   (Optional) Java runtime options used when the "start",
+#                   "stop", or "run" command is executed.
+#
+#   CATALINA_TMPDIR (Optional) Directory path location of temporary directory
+#                   the JVM should use (java.io.tmpdir).  Defaults to
+#                   $CATALINA_BASE/temp.
+#
+#   JAVA_HOME       Must point at your Java Development Kit installation.
+#
+#   JAVA_OPTS       (Optional) Java runtime options used when the "start",
+#                   "stop", or "run" command is executed.
+#
+#   JPDA_TRANSPORT  (Optional) JPDA transport used when the "jpda start"
+#                   command is executed. The default is "dt_socket".
+#
+#   JPDA_ADDRESS    (Optional) Java runtime options used when the "jpda start"
+#                   command is executed. The default is 8000.
+#
+#   JSSE_HOME       (Optional) May point at your Java Secure Sockets Extension
+#                   (JSSE) installation, whose JAR files will be added to the
+#                   system class path used to start Tomcat.
+#
+#   CATALINA_PID    (Optional) Path of the file which should contains the pid
+#                   of catalina startup java process, when start (fork) is used
+#
+# $Id: catalina.sh,v 1.17 2004/11/17 20:17:46 yoavs Exp $
+# -----------------------------------------------------------------------------
+JAVA_HOME='/usr/share/java/jdk7u79/'
+export JAVA_HOME
+PATH=$JAVA_HOME/bin:$PATH
+export PATH
+CATALINA_HOME='/opt/apps/apache-tomcat-8.0.24'
+
+case $1 in
+start)
+sh $CATALINA_HOME/bin/startup.sh
+;;
+stop)
+sh $CATALINA_HOME/bin/shutdown.sh
+;;
+restart)
+sh $CATALINA_HOME/bin/shutdown.sh
+sh $CATALINA_HOME/bin/startup.sh
+;;
+esac
+exit 0

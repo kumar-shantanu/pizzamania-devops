@@ -1,0 +1,47 @@
+---
+#Title:tasks file for java
+#Author: Kumar Shantanu
+#Email: km.shantanu@gmail.com
+#company Name: Pizzamania Services Pvt Ltd.
+
+  - name: create java directory
+    file: path={{ java_dir }} state=directory mode=0777
+
+#  - name: wget
+#    command: wget -O {{ java_dir }}/{{java_archive}} --user=kuh1982 --password=****** {{java_url}}
+#    get_url: url={{ java_url }}
+ #            dest={{ java_dir }}
+#             url_username={{ auth_user }}
+ #            url_password={{ auth_pass }}
+#            validate_certs=no
+       #      mode=0755
+
+  - name: untar java
+    unarchive: src={{ java_tmp_dir }}/jdk-8u65-linux-x64.tar.gz
+               dest={{ java_dir }}
+               copy=no
+
+  - name: remove the tar file
+    file: path={{ java_dir }}/jdk-8u65-linux-x64.tar.gz state=absent
+
+  - name: rename jdk directory
+    shell: mv {{ java_dir }}/jdk1* {{ java_dir }}/jdk8u65
+
+  - name: updating alternatives java
+    command: alternatives --install /usr/bin/{{ item }} {{ item }} {{ java_dir }}/jdk8u65/bin/{{ item }} 1
+    with_items:
+        - java
+        - javac
+        - javah
+        - javaws
+    when: ansible_distribution == 'CentOS' or ansible_os_family == "RedHat"
+
+
+  - name: updating alternatives java on Ubuntu
+    command: update-alternatives --install /usr/bin/{{ item }} {{ item }} {{ java_dir }}/jdk8u65/bin/{{ item }} 1
+    with_items:
+        - java
+        - javac
+        - javah
+        - javaws
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'

@@ -1,0 +1,11 @@
+---
+#Variables for all machines
+security_group: default
+image: ami-12663b7a 
+region: us-east-1
+keypair: trribe
+jasper_instance_type: changeme
+tomcat_instance_type: t2.micro
+nginx_instance_type: t2.micro
+mariadb_instance_type: t2.micro
+custom_instance_type: t2.micro
