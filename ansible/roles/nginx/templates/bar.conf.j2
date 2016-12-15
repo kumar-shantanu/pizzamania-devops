@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+upstream backend {
+  server 127.0.0.0:8080 weight=5;
+}
+server {
+  server_name {{nginx_sites[item].server_name}};
+  location / {
+    proxy_pass http://backend;
+  }
+}

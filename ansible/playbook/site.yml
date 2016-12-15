@@ -1,0 +1,8 @@
+---
+# Calling all the individual play book files which will then call all the corresponding roles
+
+    - include: nginx.yml
+    - include: tomcat.yml
+    - include: jboss.yml
+    - include: alfresco.yml
+    - include: apache.yml
