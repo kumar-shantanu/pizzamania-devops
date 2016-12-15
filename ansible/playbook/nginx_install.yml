@@ -1,5 +1,0 @@
----
-## ansible-playbook -i <INVETORY-FILE> -u <User> --extra-vars "hosts=AHK-INT nginx_install=true" redis_install.yml -kK
-- hosts: webserver
-  roles:
-  - {role: nginx, nginx_http_params: ["sendfile on", "access_log /var/log/nginx/access.log"]}

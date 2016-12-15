@@ -1,8 +1,0 @@
----
-# vars file for java
-java_dir: "/usr/share/java"
-java_tmp_dir: "/tmp"
-java_url: "https://bitbucket.org/flo2go-vos/trribe-vos/downloads/jdk-8u65-linux-x64.tar.gz"
-auth_user: "use only if needed"
-auth_pass: "use only if needed"
-java_archive: "jdk-8u65-linux-x64.tar.gz"
