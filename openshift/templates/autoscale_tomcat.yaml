@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: tomcat
+spec:
+  scaleRef:
+    kind: DeploymentConfig 
+    name: tomcat 
+    apiVersion: v1 
+    subresource: scale
+  minReplicas: 1 
+  maxReplicas: 4 
+  cpuUtilization:
+    targetPercentage: 80  
