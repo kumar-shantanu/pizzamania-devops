@@ -11,12 +11,10 @@ metadata:
     tags: database,mysql
 message: |-
   The following service(s) have been created in your project: ${DATABASE_SERVICE_NAME}.
-
          Username: ${MYSQL_USER}
          Password: ${MYSQL_PASSWORD}
     Database Name: ${MYSQL_DATABASE}
    Connection URL: mysql://${DATABASE_SERVICE_NAME}:3306/
-
 labels:
   template: mysql-template
 objects:
@@ -150,4 +148,3 @@ parameters:
   description: Version of MySQL image to be used (5.5, 5.6 or latest).
   value: '5.6'
   required: true
-
