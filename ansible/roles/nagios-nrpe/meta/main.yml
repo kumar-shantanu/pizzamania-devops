@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: Kumar Shantanu
+  description: Nagios NRPE Server configuration Ansible Role
+  license: Apache
+  min_ansible_version: 1.2
+  platforms:
+  - name: Ubuntu
+    versions:
+    - raring
+    - saucy
+    - trusty
+  - name: EL
+    versions:
+    - 6
+    - 7
+  categories:
+    - monitoring
+    - system
+dependencies: []
