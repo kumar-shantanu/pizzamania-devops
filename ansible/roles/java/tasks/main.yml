@@ -24,8 +24,13 @@
   - name: remove the tar file
     file: path={{ java_dir }}/jdk-8u65-linux-x64.tar.gz state=absent
 
+  - name: Check if java is already installed
+    stat: path={{ java_dir }}/jdk8u65
+    register: check_path
+
   - name: rename jdk directory
     shell: mv {{ java_dir }}/jdk1* {{ java_dir }}/jdk8u65
+    when: check_path.stat.exists == false
 
   - name: updating alternatives java
     command: alternatives --install /usr/bin/{{ item }} {{ item }} {{ java_dir }}/jdk8u65/bin/{{ item }} 1
