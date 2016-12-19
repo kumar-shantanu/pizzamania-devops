@@ -1,0 +1,154 @@
+/**********************************************************************************
+     Template      :  Pizzamania Delivery-Pipeline
+     Description   :  Creates the Pizzamania  Delivery pipeline with all required jobs
+     Author        :  Kumar Shantanu
+     Date          :  12/18/2016
+     Revision      :  1.0
+***********************************************************************************/
+
+/**************************************************
+      Continuous Delivery Pipeline DSL
+***************************************************/
+  
+deliveryPipelineView('Pizzamania-Delivery-Pipeline') {
+    pipelineInstances(5)
+    showAggregatedPipeline()
+    columns(2)
+    sorting(Sorting.TITLE)
+    updateInterval(60)
+    enableManualTriggers()
+    showAvatars()
+    showChangeLog()
+    pipelines {
+        component('Pizzamania-Continuous-Delivery-Pipeline', 'Pizzamania-BUILD')
+    }
+}
+
+/**************************************************
+      Maven Build JOB DSL
+***************************************************/
+mavenJob('Pizzamania-BUILD') {
+    description('Pizzamania Maven Code Compilation JOB')
+    displayName('Pizzamania Code Compilation')
+    logRotator(2, 2)
+    rootPOM('pom.xml')
+    jdk('java-1.8.0_65')
+    mavenInstallation('maven-3.3.9')
+    scm {
+        git {
+            remote {
+                name('origin')
+                url('https://github.com/kumar-shantanu/pizzamania-engine.git')
+                credentials('pizzamania-credentials')
+            }
+            branch('*/master')
+        }
+    }
+    goals('clean install -DskipTests=true')
+    incrementalBuild()
+    publishers {
+        downstream('Pizzamania', 'SUCCESS')
+        extendedEmail {
+            recipientList('km.shantanu@gmail.com')
+            defaultSubject('Pizzamania BUILD | $BUILD_STATUS')
+            defaultContent('${JELLY_SCRIPT,template="html"}')
+            contentType('text/html')
+            triggers {
+                always {
+                    sendTo {
+                       developers()
+                       requester()
+                       recipientList()
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**************************************************
+      Maven Unit Tests Build JOB DSL
+***************************************************/
+mavenJob('Pizzamania-UNIT-TESTS') {
+    description('Pizzamania Maven Unit Tests JOB')
+    displayName('Pizzamania Unit Tests Build')
+    logRotator(2, 2)
+    rootPOM('pom.xml')
+    jdk('java-1.8.0_65')
+    mavenInstallation('maven-3.3.9')
+    scm {
+        git {
+            remote {
+                name('origin')
+                url('https://github.com/kumar-shantanu/pizzamania-engine.git')
+                credentials('pizzamania-credentials')
+            }
+            branch('*/master')
+        }
+    }
+    goals('clean install')
+    incrementalBuild()
+    publishers {
+        downstream('AEM-SONAR-BUILD', 'SUCCESS')
+        extendedEmail {
+            recipientList('km.shantanu@gmail.com')
+            defaultSubject('Pizzamania UNIT TESTS BUILD | $BUILD_STATUS')
+            defaultContent('${JELLY_SCRIPT,template="html"}')
+            contentType('text/html')
+            triggers {
+                always {
+                    sendTo {
+                       developers()
+                       requester()
+                       recipientList()
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**************************************************
+      Maven Sonar Code Analysis JOB DSL
+***************************************************/
+mavenJob('Pizzamania-SONAR-BUILD') {
+    description('Pizzamania Maven Sonar Build JOB')
+    displayName('Pizzamania Maven Sonar Build')
+    logRotator(2, 2)
+    rootPOM('pom.xml')
+    jdk('java-1.8.0_65')
+    mavenInstallation('maven-3.3.9')
+    scm {
+        git {
+            remote {
+                name('origin')
+                url('https://qa.tools.sapient.com/stash/scm/gittest/git-test.git')
+                credentials('pizzamania-credentials')
+            }
+            branch('*/master')
+        }
+    }
+    goals('clean install')
+    incrementalBuild()
+    publishers {
+        sonar ()
+        downstream('Pizzamania-NEXUS-PUBLISH', 'SUCCESS')
+        extendedEmail {
+            recipientList('km.shantanu@gmail.com')
+            defaultSubject('Pizzamania SONAR BUILD | $BUILD_STATUS')
+            defaultContent('${JELLY_SCRIPT,template="html"}')
+            contentType('text/html')
+            triggers {
+                always {
+                    sendTo {
+                       developers()
+                       requester()
+                       recipientList()
+                    }
+                }
+            }
+        }
+    }
+}
+
+
