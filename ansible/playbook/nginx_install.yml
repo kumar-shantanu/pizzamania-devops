@@ -2,7 +2,7 @@
 ## ansible-playbook -i <INVETORY-FILE> -u <User> --extra-vars "hosts=AHK-INT nginx_install=true" redis_install.yml -kK
 - hosts: nginx
   roles:
-    - role: nginx
+    - {role: ../roles/nginx }
       nginx_error_log_level: info
       nginx_http_params:
         - sendfile on

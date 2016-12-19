@@ -2,4 +2,4 @@
 ## ansible-playbook -i <INVETORY-FILE> -u <User> --extra-vars "hosts=AHK-INT nginx_install=true" redis_install.yml -kK
 - hosts: all
   roles:
-    - role: java
+    - {role: ../roles/java }

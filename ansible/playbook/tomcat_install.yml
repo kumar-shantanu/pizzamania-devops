@@ -1,3 +1,3 @@
 - hosts: tomcat
   roles:
-      - role: tomcat
+      - {role: ../roles/tomcat }

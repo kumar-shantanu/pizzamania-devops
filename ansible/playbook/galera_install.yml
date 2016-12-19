@@ -5,7 +5,7 @@
     - galera_cluster_name: cluster_one
     - galera_cluster_members: [192.168.1.104, 192.168.1.103,192.168.1.107]
   roles:
-    - role: galera-master
+    - {role: ../roles/galera-master }
 
 - hosts: cluster_two
   remote_user: root
@@ -13,4 +13,4 @@
     - galera_cluster_name: cluster_two
     - galera_cluster_members: [10.0.1.1, 10.0.1.2]
   roles:
-    - role: galera-master
+    - {role: ../roles/galera-master }
