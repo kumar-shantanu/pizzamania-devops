@@ -4,7 +4,7 @@
   roles:
     - role: ../roles/nginx
       nginx_sites:
-        bar:
+        pizzamania:
           template: pizzamania.conf.j2
           server_name: pizzamania.demo.com
 
