@@ -21,7 +21,7 @@ Login to OpenShift and create a new project or use an existing project
 
 Create a new build of the application by running the following commands within this directory
 
-    oc new-build registry.access.redhat.com/rhel7/rhel --name=nexus --binary=true
+    oc new-build docker.io/centos --name=nexus --binary=true
     
 Start a new build of the Nexus image
 
