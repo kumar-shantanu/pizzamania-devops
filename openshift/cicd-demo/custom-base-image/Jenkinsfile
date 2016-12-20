@@ -1,0 +1,62 @@
+node('ose-agent') {
+    
+    env.KUBECONFIG = pwd() + "/.kubeconfig"
+    def baseImageProject = "custom-base-image"
+    def enterpriseResourcesProject = "enterprise-resources"
+    def baseImage = "custom-base-image"
+    def WORKSPACE = pwd()
+    
+    stage 'Checkout'
+    
+      checkout scm
+      
+    stage 'Update BuildConfig Version'
+      
+      def finalTagVersion = parseVersion("${WORKSPACE}/version.txt")
+      
+      def buildVersion = "${finalTagVersion}-\${BUILD_NUMBER}"
+      
+      login()
+      
+      sh """
+       set +x 
+      
+       currentOutputName=\$(oc get bc ${baseImage} -n ${baseImageProject} --template='{{ .spec.output.to.name }}')
+       
+       newImageName=\${currentOutputName%:*}:${buildVersion}
+       
+       oc patch bc ${baseImage} -n ${baseImageProject} -p "{ \\"spec\\": { \\"output\\": { \\"to\\": { \\"name\\": \\"\${newImageName}\\" } } } }"
+       
+      """
+    stage "Build Image"
+    
+    
+      login()
+      
+      sh """
+        set +x
+        oc start-build ${baseImage} -n ${baseImageProject} --follow=true --wait=true --from-dir="${WORKSPACE}/"
+      """
+
+    stage "Tag Image"
+      login()
+      
+      sh """
+        set +x
+        oc tag ${baseImageProject}/${baseImage}:${buildVersion} ${baseImageProject}/${baseImage}:${finalTagVersion}
+        
+        oc tag ${baseImageProject}/${baseImage}:${finalTagVersion} ${enterpriseResourcesProject}/${baseImage}:${finalTagVersion}
+      """
+}
+
+def login() {
+    sh """
+       set +x
+       oc login --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt --token=\$(cat /var/run/secrets/kubernetes.io/serviceaccount/token) https://kubernetes.default.svc.cluster.local >/dev/null 2>&1 || echo 'OpenShift login failed'
+       """
+}
+
+def parseVersion(String filename) {
+    def version = readFile(filename)
+    version.trim()
+}
