@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/rhel7/rhel
+FROM docker.io/centos
 
 EXPOSE 8081
 

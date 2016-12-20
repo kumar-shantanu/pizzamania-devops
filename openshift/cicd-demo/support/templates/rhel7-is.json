@@ -5,6 +5,6 @@
         "name": "rhel7"
     },
 	"spec": {
-		"dockerImageRepository": "registry.access.redhat.com/rhel7/rhel"
+		"dockerImageRepository": "docker.io/centos"
 	}
 }
